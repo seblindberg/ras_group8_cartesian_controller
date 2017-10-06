@@ -89,14 +89,14 @@ void Teleop::spin()
       /* Increase the angular velocity */
       case KEYCODE_R:
         ROS_INFO("RIGHT");
-        twist_msg_.angular.z += angular_velocity_step_;
+        twist_msg_.angular.z -= angular_velocity_step_;
         dirty = true;
         break;
         
       /* Decrease the angular velocity */
       case KEYCODE_L:
         ROS_INFO("LEFT");
-        twist_msg_.angular.z -= angular_velocity_step_;
+        twist_msg_.angular.z += angular_velocity_step_;
         dirty = true;
         break;
       
