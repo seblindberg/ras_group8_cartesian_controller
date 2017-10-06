@@ -70,7 +70,7 @@ void CartesianController::linearTwistCallback(const geometry_msgs::Twist& msg)
   double c = wheel_distance_ / 2.0 * w;
   
   motor_left_msg_.data = (v - c) / wheel_radius_;
-  motor_left_msg_.data = (v + c) / wheel_radius_;
+  motor_right_msg_.data = (v + c) / wheel_radius_;
 }
 
 
