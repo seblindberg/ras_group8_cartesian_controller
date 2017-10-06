@@ -3,13 +3,13 @@
 #include <ros/ros.h>
 #include <phidgets/motor_encoder.h>
 
-namespace ras_group8_template {
+namespace ras_group8_cartesian_controller {
 
-class Template
+class CartesianController
 {
 public:
-  Template(ros::NodeHandle& nodeHandle);
-  virtual ~Template();
+  CartesianController(ros::NodeHandle& nodeHandle);
+  virtual ~CartesianController();
 
 private:
   bool readParameters();

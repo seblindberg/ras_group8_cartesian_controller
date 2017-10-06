@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ras_group8_template)
+project(ras_group8_cartesian_controller)
 
 find_package(catkin REQUIRED
   COMPONENTS
@@ -24,8 +24,8 @@ include_directories(
 )
 
 add_executable(${PROJECT_NAME}
-  src/template_node.cpp
-  src/Template.cpp
+  src/cartesian_controller_node.cpp
+  src/CartesianController.cpp
 )
 
 add_dependencies(${PROJECT_NAME}
@@ -36,7 +36,7 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-catkin_add_gtest(template_tests test/test_template.cpp src/Template.cpp)
+catkin_add_gtest(cartesian_controller_tests test/test_cartesian_controller.cpp src/CartesianController.cpp)
 
 # Make main executable
 install(
