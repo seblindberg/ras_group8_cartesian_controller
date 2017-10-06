@@ -4,10 +4,17 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "ras_group8_cartesian_controller");
-  ros::NodeHandle nodeHandle("~");
+  ros::NodeHandle node_handle("~");
+  ros::Rate       loop_rate(10.0);
+  
+  ras_group8_cartesian_controller::CartesianController controller(node_handle);
 
-  ras_group8_cartesian_controller::CartesianController mainObject(nodeHandle);
-
-  ros::spin();
+  for (;;) {
+    ros::spinOnce();
+    /* Publish motor control messages */
+    controller.update();
+    loop_rate.sleep();
+  }
+  
   return 0;
 }

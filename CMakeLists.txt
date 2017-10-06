@@ -4,7 +4,8 @@ project(ras_group8_cartesian_controller)
 find_package(catkin REQUIRED
   COMPONENTS
   roscpp
-  phidgets
+  std_msgs
+  geometry_msgs
 )
 
 catkin_package(
@@ -13,7 +14,8 @@ catkin_package(
 
   CATKIN_DEPENDS
     roscpp
-    phidgets
+    std_msgs
+    geometry_msgs
 
 # DEPENDS
 )
