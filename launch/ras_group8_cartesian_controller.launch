@@ -3,7 +3,7 @@
   <!-- Launch RAS Group 8 Template Node -->
   <node pkg="ras_group8_cartesian_controller"
        type="ras_group8_cartesian_controller"
-       name="ras_group8_cartesian_controller"
+       name="cartesian_controller"
      output="screen">
     <rosparam command="load" file="$(find ras_group8_cartesian_controller)/config/default.yaml" />
   </node>

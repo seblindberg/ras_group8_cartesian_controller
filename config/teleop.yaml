@@ -1,0 +1,3 @@
+linear_velocity_step: 0.01
+angular_velocity_step: 0.01
+twist_topic: '/cartesian_controller/twist'

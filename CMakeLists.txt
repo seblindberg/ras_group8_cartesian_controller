@@ -25,6 +25,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+# Main node
 add_executable(${PROJECT_NAME}
   src/cartesian_controller_node.cpp
   src/CartesianController.cpp
@@ -43,6 +44,28 @@ catkin_add_gtest(cartesian_controller_tests test/test_cartesian_controller.cpp s
 # Make main executable
 install(
   TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Teleop node
+add_executable(teleop
+  src/teleop_node.cpp
+  src/Teleop.cpp
+)
+
+add_dependencies(teleop
+  ${catkin_EXPORTED_TARGETS}
+)
+
+target_link_libraries(teleop
+  ${catkin_LIBRARIES}
+)
+
+# Make Teleop
+install(
+  TARGETS teleop
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

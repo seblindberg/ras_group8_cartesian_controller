@@ -1,3 +1,3 @@
 linear_twist_topic: 'twist'
-left_motor_topic:  'left_topic'
-right_motor_topic: 'right_topic'
+left_motor_topic:  '/motor_left/motor_controller/velocity'
+right_motor_topic: '/motor_right/motor_controller/velocity'
