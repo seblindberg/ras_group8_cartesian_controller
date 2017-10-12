@@ -6,6 +6,7 @@ find_package(catkin REQUIRED
   roscpp
   std_msgs
   geometry_msgs
+  #ras_group8_util
 )
 
 catkin_package(
@@ -16,7 +17,7 @@ catkin_package(
     roscpp
     std_msgs
     geometry_msgs
-
+    #ras_group8_util
 # DEPENDS
 )
 
@@ -36,6 +37,7 @@ add_dependencies(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
+  #ras_group8_util_reloadable
   ${catkin_LIBRARIES}
 )
 

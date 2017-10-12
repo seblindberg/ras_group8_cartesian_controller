@@ -8,7 +8,6 @@
 namespace ras_group8_cartesian_controller {
 
 /* Setup global exit mechanism. There can only ever be on Teleop node at a time. */
-
 static Teleop *instance;
 static void quit(int sig)
 {
@@ -18,15 +17,14 @@ static void quit(int sig)
 }
 
 Teleop::Teleop(ros::NodeHandle& node_handle, int kfd)
-    : node_handle_(node_handle)
+    : node_handle_(node_handle),
+      kfd_(kfd)
 {
   if (!readParameters()) {
     ROS_ERROR("Could not read parameters.");
     ros::requestShutdown();
     exit(0);
   }
-    
-  kfd_ = kfd;
   
   /* Setup publisher */
   twist_publisher_ =
@@ -49,7 +47,8 @@ void Teleop::spin()
   char c;
   bool dirty = false;
   
-  //ROS_ASSERT(NULL == instance);
+  /* Only one instance of the teleop can run in a single terminal. */
+  ROS_ASSERT(NULL == instance);
   instance = this;
   
   signal(SIGINT, quit);
@@ -64,7 +63,7 @@ void Teleop::spin()
   
   tcsetattr(kfd_, TCSANOW, &terminal_raw_);
   
-  for (;;) {
+  while (node_handle_.ok()) {
     if (read(kfd_, &c, 1) < 0)
     {
       ROS_ERROR("failed to read");
@@ -74,28 +73,24 @@ void Teleop::spin()
     switch (c) {
       /* Increase the linear velocity */
       case KEYCODE_U:
-        ROS_INFO("UP");
         twist_msg_.linear.x += linear_velocity_step_;
         dirty = true;
         break;
         
       /* Increase the linear velocity */
       case KEYCODE_D:
-        ROS_INFO("DOWN");
         twist_msg_.linear.x -= linear_velocity_step_;
         dirty = true;
         break;
       
       /* Increase the angular velocity */
       case KEYCODE_R:
-        ROS_INFO("RIGHT");
         twist_msg_.angular.z -= angular_velocity_step_;
         dirty = true;
         break;
         
       /* Decrease the angular velocity */
       case KEYCODE_L:
-        ROS_INFO("LEFT");
         twist_msg_.angular.z += angular_velocity_step_;
         dirty = true;
         break;
@@ -111,9 +106,12 @@ void Teleop::spin()
     
     if (dirty) {
       twist_publisher_.publish(twist_msg_);
+      ROS_INFO("^ %2.2f, < %2.2f", twist_msg_.linear.x, twist_msg_.angular.z);
       dirty = false;
     }
   }
+  
+  restore();
 }
 
 bool Teleop::readParameters()

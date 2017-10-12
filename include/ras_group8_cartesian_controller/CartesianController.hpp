@@ -9,7 +9,12 @@ namespace ras_group8_cartesian_controller {
 class CartesianController
 {
 public:
-  CartesianController(ros::NodeHandle& node_handle);
+  CartesianController(ros::NodeHandle& node_handle,
+                      std::string& linear_twist_topic,
+                      std::string& motor_left_topic,
+                      std::string& motor_right_topic,
+                      // double wheel_radius,
+                      double wheel_distance);
   virtual ~CartesianController();
   
   /* Updates the left and right wheel velocities */
@@ -29,12 +34,12 @@ private:
   
   /* Parameters
    */
-  std::string linear_twist_topic_;
-  std::string motor_left_topic_;
-  std::string motor_right_topic_;
+  // const std::string linear_twist_topic_;
+  // const std::string motor_left_topic_;
+  // const std::string motor_right_topic_;
   
-  double wheel_radius_;
-  double wheel_distance_;
+  const double wheel_radius_;
+  const double wheel_distance_;
   
   /* Variables
    */
