@@ -9,17 +9,10 @@ CartesianController::CartesianController(ros::NodeHandle& node_handle,
                                          std::string& linear_twist_topic,
                                          std::string& motor_left_topic,
                                          std::string& motor_right_topic,
-                                         // double wheel_radius,
                                          double wheel_distance)
     : node_handle_(node_handle),
-      // wheel_radius_(wheel_radius),
       wheel_distance_(wheel_distance)
 {
-  // if (!readParameters()) {
-  //   ROS_ERROR("Could not read parameters.");
-  //   ros::requestShutdown();
-  // }
-  
   linear_twist_subscriber_
     = node_handle_.subscribe(linear_twist_topic, 1,
                             &CartesianController::linearTwistCallback, this);
@@ -55,21 +48,6 @@ void CartesianController::reset()
   motor_right_msg_.data = 0.0;
   motor_left_msg_.data  = 0.0;
 }
-
-// bool CartesianController::readParameters()
-// {
-//   if (!node_handle_.getParam("linear_twist_topic", linear_twist_topic_))
-//     return false;
-//   if (!node_handle_.getParam("left_motor_topic", motor_left_topic_))
-//     return false;
-//   if (!node_handle_.getParam("right_motor_topic", motor_right_topic_))
-//     return false;
-//   if (!node_handle_.getParam("/platform/wheel_radius", wheel_radius_))
-//     return false;
-//   if (!node_handle_.getParam("/platform/wheel_distance", wheel_distance_))
-//     return false;
-//   return true;
-// }
 
 /* Transform the linear and angular twist velocities into wheel velocities
  */
