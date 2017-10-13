@@ -38,7 +38,6 @@ private:
   // const std::string motor_left_topic_;
   // const std::string motor_right_topic_;
   
-  const double wheel_radius_;
   const double wheel_distance_;
   
   /* Variables
