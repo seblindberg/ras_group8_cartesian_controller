@@ -1,7 +1,7 @@
 <launch>
   
   <!-- Launch the Cartesian Controller node -->
-  <include file="$(find ras_group8_cartesian_controller)/launch/ras_group8_cartesian_controller.launch" />
+  <!--<include file="$(find ras_group8_cartesian_controller)/launch/ras_group8_cartesian_controller.launch" />-->
 
   <!-- Launch the Teleop Node -->
   <node pkg="ras_group8_cartesian_controller"
