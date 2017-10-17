@@ -15,7 +15,7 @@ CartesianController::CartesianController(ros::NodeHandle& node_handle,
 {
   linear_twist_subscriber_
     = node_handle_.subscribe(linear_twist_topic, 1,
-                            &CartesianController::linearTwistCallback, this);
+                             &CartesianController::linearTwistCallback, this);
   
   motor_left_publisher_
     = node_handle_.advertise<std_msgs::Float32>(motor_left_topic, 1);
