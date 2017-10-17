@@ -16,16 +16,34 @@ namespace ras_group8_cartesian_controller {
 class Teleop
 {
 public:
-  Teleop(ros::NodeHandle& node_handle, int kfd);
+  static Teleop& getInstance()
+  {
+    static ros::NodeHandle n("~");
+    static Teleop instance = load(n);
+    return instance;
+  }
+  
+  
   virtual ~Teleop();
   
   void spin();
   
   void restore();
+  
+  static void
+    quit(int sig);
 
 private:
-  bool readParameters();
+  Teleop(ros::NodeHandle& node_handle, int kfd,
+         double linear_velocity_step,
+         double angular_velocity_step,
+         const std::string& twist_topic);
   
+  Teleop(Teleop const&);         // Don't Implement
+  void operator=(Teleop const&); // Don't implement
+  
+  static Teleop
+    load(ros::NodeHandle& n);  
 
   /* ROS Objects
    */
@@ -35,9 +53,8 @@ private:
 
   /* Parameters
    */
-  std::string twist_topic_;
-  double linear_velocity_step_;
-  double angular_velocity_step_;
+  const double linear_velocity_step_;
+  const double angular_velocity_step_;
 
   /* Variables
    */

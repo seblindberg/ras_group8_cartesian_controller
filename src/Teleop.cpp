@@ -7,52 +7,52 @@
 
 namespace ras_group8_cartesian_controller {
 
-/* Setup global exit mechanism. There can only ever be on Teleop node at a time. */
-static Teleop *instance;
-static void quit(int sig)
-{
-  instance->restore();
-  ros::shutdown();
-  exit(0);
-}
-
-Teleop::Teleop(ros::NodeHandle& node_handle, int kfd)
+Teleop::Teleop(ros::NodeHandle& node_handle, int kfd,
+               double linear_velocity_step,
+               double angular_velocity_step,
+               const std::string& twist_topic)
     : node_handle_(node_handle),
+      linear_velocity_step_(linear_velocity_step),
+      angular_velocity_step_(linear_velocity_step),
       kfd_(kfd)
 {
-  if (!readParameters()) {
-    ROS_ERROR("Could not read parameters.");
-    ros::requestShutdown();
-    exit(0);
-  }
-  
-  /* Setup publisher */
   twist_publisher_ =
-    node_handle_.advertise<geometry_msgs::Twist>(twist_topic_, 1);
+    node_handle_.advertise<geometry_msgs::Twist>(twist_topic, 1);
 
   ROS_INFO("Successfully launched node.");
 }
 
 Teleop::~Teleop()
 {
+  restore(); /* TODO: Verify that this needs to be here */
 }
 
+/* Quit
+ * Static method gets called when a SIGINT is issued by the user.
+ */
+void Teleop::quit(int sig)
+{
+  getInstance().restore(); /* TODO: Verify that this needs to be here */
+  ros::shutdown();
+  exit(0);
+}
+
+/* Restore
+ * Restore the terminal to its initial state.
+ */
 void Teleop::restore()
 {
   tcsetattr(kfd_, TCSANOW, &terminal_cooked_);
 }
 
+/* Spin
+ * Loop until the user sends a SIGINT to the process.
+ */
 void Teleop::spin()
 {
   char c;
   bool dirty = false;
-  
-  /* Only one instance of the teleop can run in a single terminal. */
-  ROS_ASSERT(NULL == instance);
-  instance = this;
-  
-  signal(SIGINT, quit);
-  
+    
   /* Save the current terminal state and initialize a new, raw profile */
   tcgetattr(kfd_, &terminal_cooked_);
   std::memcpy(&terminal_raw_, &terminal_cooked_, sizeof(struct termios));
@@ -62,6 +62,8 @@ void Teleop::spin()
   terminal_raw_.c_cc[VEOF] = 2;
   
   tcsetattr(kfd_, TCSANOW, &terminal_raw_);
+  
+  signal(SIGINT, &Teleop::quit); /* TODO: Verify that this needs to be here */
   
   while (node_handle_.ok()) {
     if (read(kfd_, &c, 1) < 0)
@@ -111,19 +113,33 @@ void Teleop::spin()
     }
   }
   
-  restore();
+  restore(); /* TODO: Verify that this needs to be here */
 }
 
-bool Teleop::readParameters()
+/* Load
+ * Private static method that initializes a new instance using parameters loaded
+ * from the parameter server.
+ */
+Teleop Teleop::load(ros::NodeHandle& n)
 {
-  if (!node_handle_.getParam("linear_velocity_step", linear_velocity_step_))
-    return false;
-  if (!node_handle_.getParam("angular_velocity_step", angular_velocity_step_))
-    return false;
-  if (!node_handle_.getParam("twist_topic", twist_topic_))
-    return false;
-
-  return true;
+  int kfd;
+  double linear_velocity_step;
+  double angular_velocity_step;
+  std::string twist_topic;
+  
+  /* Load params with defaults */
+  kfd = n.param("kfd", 0);
+  linear_velocity_step = n.param("linear_velocity_step", 0.05);
+  angular_velocity_step = n.param("angular_velocity_step", 0.05);
+  
+  /* Load required params */
+  if (!n.getParam("twist_topic", twist_topic))
+    exit(-1);
+  
+  Teleop teleop(n, kfd, linear_velocity_step,
+                angular_velocity_step, twist_topic);
+  
+  return teleop;
 }
 
 

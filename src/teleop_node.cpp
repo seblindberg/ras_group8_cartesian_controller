@@ -6,9 +6,7 @@ using namespace ras_group8_cartesian_controller;
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "teleop");
-  ros::NodeHandle node_handle("~");
-  
-  Teleop teleop(node_handle, 0);
+  Teleop& teleop = Teleop::getInstance();
 
   teleop.spin();
 
