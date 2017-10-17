@@ -15,15 +15,25 @@ public:
                       std::string& motor_right_topic,
                       // double wheel_radius,
                       double wheel_distance);
-  virtual ~CartesianController();
+  virtual
+    ~CartesianController();
   
   /* Updates the left and right wheel velocities */
-  void update();
-  void reset();
+  void
+    update();
+    
+  void
+    reset();
+    
+  static CartesianController
+    load(ros::NodeHandle& n);
 
 private:
-  bool readParameters();
-  void linearTwistCallback(const geometry_msgs::Twist& msg);
+  bool
+    readParameters();
+    
+  void
+    linearTwistCallback(const geometry_msgs::Twist& msg);
 
   /* ROS Objects
    */

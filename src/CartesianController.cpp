@@ -30,12 +30,10 @@ CartesianController::CartesianController(ros::NodeHandle& node_handle,
 
 CartesianController::~CartesianController()
 {
-  linear_twist_subscriber_.shutdown();
-  motor_left_publisher_.shutdown();
-  motor_right_publisher_.shutdown();
 }
 
-/* Publish motor velocities to the motor controller topics.
+/* Update
+ * Publish motor velocities to the motor controller topics.
  */
 void CartesianController::update()
 {
@@ -43,6 +41,9 @@ void CartesianController::update()
   motor_right_publisher_.publish(motor_right_msg_);
 }
 
+/* Reset
+ * Sets the linear and angular velocity to 0.
+ */
 void CartesianController::reset()
 {
   motor_right_msg_.data = 0.0;
@@ -59,6 +60,35 @@ void CartesianController::linearTwistCallback(const geometry_msgs::Twist& msg)
   
   motor_right_msg_.data = v + c;
   motor_left_msg_.data  = v - c;
+}
+
+/* Load
+ * Static method that loads parameters for the parameter server and creates a
+ * CartesianController using those values.
+ */
+CartesianController CartesianController::load(ros::NodeHandle& n)
+{
+  std::string linear_twist_topic;
+  std::string motor_left_topic;
+  std::string motor_right_topic;
+  
+  double wheel_distance;
+  
+  if (!n.getParam("linear_twist_topic", linear_twist_topic))
+    exit(-1);
+  if (!n.getParam("left_motor_topic", motor_left_topic))
+    exit(-1);
+  if (!n.getParam("right_motor_topic", motor_right_topic))
+    exit(-1);
+  if (!n.getParam("/platform/wheel_distance", wheel_distance))
+    exit(-1);
+  
+  CartesianController controller(n, linear_twist_topic,
+                                    motor_left_topic,
+                                    motor_right_topic,
+                                    wheel_distance);
+  
+  return controller;
 }
 
 
