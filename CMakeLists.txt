@@ -41,7 +41,17 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-catkin_add_gtest(cartesian_controller_tests test/test_cartesian_controller.cpp src/CartesianController.cpp)
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}_tests
+    test/test_cartesian_controller.cpp
+    src/CartesianController.cpp
+  )
+  
+  target_link_libraries(${PROJECT_NAME}_tests
+    ${catkin_LIBRARIES}
+  )
+endif()
+
 
 # Make main executable
 install(
