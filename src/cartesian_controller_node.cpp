@@ -8,9 +8,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "ras_group8_cartesian_controller");
   ros::NodeHandle node_handle("~");
   ros::Rate       loop_rate(10.0);
-  
-  // ras_group8_util::Reloadable<ras_group8_cartesian_controller::CartesianController> reloadable(node_handle, setup);
-  
+    
   CartesianController controller = CartesianController::load(node_handle);
   
   while (ros::ok()) {
